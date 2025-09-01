@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PORCENTAGEM CALCULATER</title>
+    <!-- Incluindo Tailwind CSS para um design moderno -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Importando a fonte Inter do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilo para usar a fonte Inter como padrão e adicionar imagem de fundo */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1554224155-1696413565d3?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Mantém a imagem fixa durante o scroll */
+        }
+        /* Estilo para remover as setas dos inputs de número */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        /* Estilo customizado para os radio buttons */
+        .custom-radio:checked {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
+            border-color: #4f46e5; /* indigo-600 */
+            background-color: #4f46e5; /* indigo-600 */
+        }
+        /* Estilo para destacar a opção selecionada */
+        .selected-radio {
+            border-color: #4f46e5; /* indigo-600 */
+            background-color: #eef2ff; /* indigo-50 */
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <!-- Efeito de vidro fosco com opacidade e backdrop-blur -->
+    <div class="w-full max-w-md mx-auto bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl shadow-indigo-100/50 p-8 space-y-6">
+        
+        <!-- Cabeçalho -->
+        <div class="text-center">
+            <h1 class="text-3xl font-bold text-indigo-600">PORCENTAGEM CALCULATER</h1>
+            <p class="text-slate-500 mt-2">Calcule acréscimos, descontos e mais.</p>
+        </div>
+
+        <!-- Formulário de Entrada -->
+        <div class="space-y-4">
+            <div>
+                <label for="valorInicial" class="text-sm font-medium text-slate-600 block mb-2">Valor Original (R$)</label>
+                <input type="number" id="valorInicial" placeholder="Ex: 1500,00" class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 border-l-4 border-l-blue-500">
+            </div>
+            <div>
+                <label for="porcentagem" class="text-sm font-medium text-slate-600 block mb-2">Porcentagem (%)</label>
+                <input type="number" id="porcentagem" placeholder="Ex: 15" class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-200 border-l-4 border-l-red-500">
+            </div>
+        </div>
+
+        <!-- Seleção de Operação -->
+        <div class="space-y-3">
+            <label class="text-sm font-medium text-slate-600 block">Escolha a operação</label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <label for="opAdicionar" class="flex items-center p-3 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition">
+                    <input id="opAdicionar" name="operacao" type="radio" value="adicionar" checked class="custom-radio h-5 w-5 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                    <span class="ml-3 text-sm font-medium text-slate-700">Acréscimo</span>
+                </label>
+                <label for="opSubtrair" class="flex items-center p-3 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition">
+                    <input id="opSubtrair" name="operacao" type="radio" value="subtrair" class="custom-radio h-5 w-5 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                    <span class="ml-3 text-sm font-medium text-slate-700">Desconto</span>
+                </label>
+                 <label for="opMultiplicar" class="flex items-center p-3 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition">
+                    <input id="opMultiplicar" name="operacao" type="radio" value="multiplicar" class="custom-radio h-5 w-5 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                    <span class="ml-3 text-sm font-medium text-slate-700">Total da %</span>
+                </label>
+            </div>
+        </div>
+
+
+        <!-- Seção de Resultados -->
+        <div id="resultado" class="bg-indigo-50/80 border-l-4 border-indigo-500 rounded-r-lg p-6 space-y-4 hidden">
+             <!-- O conteúdo do resultado será inserido aqui pelo JavaScript -->
+        </div>
+
+        <!-- Mensagem de Erro -->
+        <div id="erro" class="bg-red-50/80 text-red-700 border border-red-200 rounded-lg p-4 text-center hidden">
+            Por favor, insira valores válidos em ambos os campos.
+        </div>
+    </div>
+
+    <script>
+        // Selecionando os elementos do HTML
+        const inputValorInicial = document.getElementById('valorInicial');
+        const inputPorcentagem = document.getElementById('porcentagem');
+        const radiosOperacao = document.querySelectorAll('input[name="operacao"]');
+        const divResultado = document.getElementById('resultado');
+        const divErro = document.getElementById('erro');
+
+        // Função para destacar a opção de operação selecionada
+        function updateRadioStyles() {
+            radiosOperacao.forEach(radio => {
+                if (radio.checked) {
+                    radio.parentElement.classList.add('selected-radio');
+                } else {
+                    radio.parentElement.classList.remove('selected-radio');
+                }
+            });
+        }
+
+        // Função para formatar números como moeda brasileira (BRL)
+        function formatarMoeda(valor) {
+            return valor.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+        }
+
+        // Função principal para calcular
+        function calcular() {
+            updateRadioStyles(); // Atualiza o estilo da seleção
+
+            // Pegando os valores dos inputs e convertendo para número
+            const valorInicial = parseFloat(inputValorInicial.value);
+            const porcentagem = parseFloat(inputPorcentagem.value);
+
+            // Verificando se os valores são números válidos
+            if (isNaN(valorInicial) || isNaN(porcentagem) || valorInicial < 0 || porcentagem < 0) {
+                // Se algum campo estiver vazio, não mostra erro, apenas esconde o resultado
+                if (!inputValorInicial.value || !inputPorcentagem.value) {
+                     divResultado.classList.add('hidden');
+                     divErro.classList.add('hidden');
+                } else {
+                     divErro.classList.remove('hidden'); // Mostra a mensagem de erro
+                     divResultado.classList.add('hidden'); // Esconde o resultado
+                }
+                return; // Para a execução da função
+            }
+
+            // Se os valores forem válidos, esconde o erro
+            divErro.classList.add('hidden');
+
+            const operacao = document.querySelector('input[name="operacao"]:checked').value;
+            const valorDoPercentual = (valorInicial * porcentagem) / 100;
+            let resultadoHtml = '';
+
+            switch (operacao) {
+                case 'adicionar':
+                    resultadoHtml = `
+                        <div class="flex justify-between items-center"><span class="text-slate-600">Valor Original:</span><span class="font-semibold text-slate-800 text-lg">${formatarMoeda(valorInicial)}</span></div>
+                        <div class="flex justify-between items-center"><span class="text-slate-600">Acréscimo de ${porcentagem}%:</span><span class="font-semibold text-green-600 text-lg">+ ${formatarMoeda(valorDoPercentual)}</span></div>
+                        <hr class="border-slate-200">
+                        <div class="flex justify-between items-center"><span class="font-bold text-slate-800 text-xl">Valor Final:</span><span class="font-bold text-indigo-600 text-2xl">${formatarMoeda(valorInicial + valorDoPercentual)}</span></div>
+                    `;
+                    break;
+                case 'subtrair':
+                     resultadoHtml = `
+                        <div class="flex justify-between items-center"><span class="text-slate-600">Valor Original:</span><span class="font-semibold text-slate-800 text-lg">${formatarMoeda(valorInicial)}</span></div>
+                        <div class="flex justify-between items-center"><span class="text-slate-600">Desconto de ${porcentagem}%:</span><span class="font-semibold text-red-600 text-lg">- ${formatarMoeda(valorDoPercentual)}</span></div>
+                        <hr class="border-slate-200">
+                        <div class="flex justify-between items-center"><span class="font-bold text-slate-800 text-xl">Valor Final:</span><span class="font-bold text-indigo-600 text-2xl">${formatarMoeda(valorInicial - valorDoPercentual)}</span></div>
+                    `;
+                    break;
+                case 'multiplicar':
+                    resultadoHtml = `
+                        <div class="flex justify-between items-center"><span class="text-slate-600">${porcentagem}% de:</span><span class="font-semibold text-slate-800 text-lg">${formatarMoeda(valorInicial)}</span></div>
+                        <hr class="border-slate-200">
+                        <div class="flex justify-between items-center"><span class="font-bold text-slate-800 text-xl">Resultado:</span><span class="font-bold text-indigo-600 text-2xl">${formatarMoeda(valorDoPercentual)}</span></div>
+                    `;
+                    break;
+            }
+
+            divResultado.innerHTML = resultadoHtml;
+            divResultado.classList.remove('hidden');
+        }
+
+        // Adicionando "escutadores" de eventos
+        inputValorInicial.addEventListener('input', calcular);
+        inputPorcentagem.addEventListener('input', calcular);
+        radiosOperacao.forEach(radio => radio.addEventListener('change', calcular));
+
+        // Adicionando funcionalidade para a tecla "Enter"
+        inputValorInicial.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Impede o comportamento padrão (como submeter um formulário)
+                inputPorcentagem.focus(); // Move o foco para o próximo campo
+            }
+        });
+
+        inputPorcentagem.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                calcular(); // Executa o cálculo
+                inputPorcentagem.blur(); // Opcional: remove o foco do campo
+            }
+        });
+        
+        // Chamar para definir o estilo inicial quando a página carregar
+        updateRadioStyles();
+
+    </script>
+</body>
+</html>
+
