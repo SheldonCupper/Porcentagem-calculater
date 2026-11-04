@@ -155,7 +155,7 @@
             const porcentagem = parseFloat(inputPorcentagem.value);
 
             // Verificando se os valores são números válidos
-            if (isNaN(valorInicial) || isNaN(porcentagem) || valorInicial < 0 || porcentagem < 0) {
+            if (!Number.isFinite(valorInicial) || !Number.isFinite(porcentagem) || valorInicial < 0 || porcentagem < 0 || !Number.isFinite(valorInicial * porcentagem)) {
                 // Se algum campo estiver vazio, não mostra erro, apenas esconde o resultado
                 if (!inputValorInicial.value || !inputPorcentagem.value) {
                      divResultado.classList.add('hidden');
