@@ -2,6 +2,8 @@
 
 Aplicação web para cálculos de porcentagem, desenvolvida com **HTML, JavaScript e Tailwind CSS**. Projeto de estudos e prática de interfaces interativas.
 
+**[🚀 Abrir demonstração online](https://sheldoncupper.github.io/Porcentagem-calculater/)**
+
 ## Executar
 
 Abra o arquivo `index.html` em um navegador com acesso à internet.
